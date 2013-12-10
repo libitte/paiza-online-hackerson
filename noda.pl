@@ -74,12 +74,18 @@ sub get_max_pair {
 	return $max_pair;
 }
 
-sub sum {
-	my @s = @_;
-	my $ret = 0;
-	for (@s) {
-		$ret += $_;
-	}
-	return $ret;
+sub _max {
+	my ($n) = @_;
+	my @ns = sort { $b <=> $a } @$n;
+	return shift(@ns);
 }
+
+#sub sum {
+#	my @s = @_;
+#	my $ret = 0;
+#	for (@s) {
+#		$ret += $_;
+#	}
+#	return $ret;
+#}
 
