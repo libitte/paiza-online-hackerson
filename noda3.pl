@@ -26,24 +26,17 @@ while (my $p_i = <STDIN>) {
 }
 #print("*** @p_N ***\n");
 
-my @m_D;
 my $j = 0;
 while (my $m_j = <STDIN>) {
 	chomp($m_j);
-	push(@m_D, $m_j);
+
+	print(get_max_pair($m_j, \@p_N), "\n");
+	#printf("*** campaign price/max pair price:%d/%d ***\n", $m_j, get_max_pair($m_j, @p_N));
+
 	$j++;
 	last if $j == $D;
 }
 #print("*** @m_D ***\n");
-
-
-# print result
-#----------------
-
-while (my $m_j = shift(@m_D)) {
-	print(get_max_pair($m_j, \@p_N), "\n");
-	#printf("*** campaign price/max pair price:%d/%d ***\n", $m_j, get_max_pair($m_j, @p_N));
-}
 
 sub get_max_pair {
 	my $m_j = shift;
@@ -55,31 +48,25 @@ sub get_max_pair {
 
 	return 0 unless(@n);
 
-	my $max_index = scalar(@n) - 1;
+	my $dest_index = scalar(@n) - 1;
 
-	my $candidates;
-	for my $i (0 .. $max_index) {
-		my $x = $n[$i];
-		splice(@n, $i, 1);
-		push(@$candidates, _max([grep { $_ <= $m_j } map { $x + $_ } @n]));
-		splice(@n, $i, 0, $x);
+	my $max = 0;
+	for my $i (0 .. $dest_index) {
+		for my $j ($i+1 .. $dest_index) {
+			my $sum = $n[$i] + $n[$j];
+			next if $sum > $m_j;
+			$max = $sum if $sum >= $max;
+		}
 	}
-	#my $indexes = [0 .. $max_index];
-	#while (defined(my $i = shift(@$indexes))) {
-	#	my $x = $n[$i];
-	#	splice(@n, $i, 1);
-	#	push(@$candidates, _max([grep { $_ <= $m_j } map { $x + $_ } @n]));
-	#	splice(@n, $i, 0, $x);
-	#}
-	return _max($candidates);
 
+	return $max;
 }
 
-sub _max {
-	my ($n) = @_;
-	my @ns = sort { $b <=> $a } @$n;
-	return shift(@ns);
-}
+#sub _max {
+#	my ($n) = @_;
+#	my @ns = sort { $b <=> $a } @$n;
+#	return shift(@ns);
+#}
 
 #sub sum {
 #	my ($s) = @_;
